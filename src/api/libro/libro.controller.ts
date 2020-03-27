@@ -1,25 +1,34 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { RestService } from '../rest/rest.service'
 import { Libro } from './libro';
 
 @Controller('libro')
 export class LibroController {
 
+  private l : Libro[] = [];
+  constructor(private readonly restService: RestService){
+    this.restService.libro=[];
+    //this.datos=this.restService.getDatos();
+  }
+
   @Get() //Listado de libros
   findAll() : Libro[] {
     //buscar los datos en la BD
-    return [];
+    return this.restService.getLibros();
   }
 
   @Post() //Añade un libro y lo devuelve
-  addOne(@Body() l1 : Libro) : Libro {
+  addOne(@Body() l1 : Libro) {
     //recoger el objeto Libro y meterlo en la BD
-    const lc = new Libro();
+    /* const lc = new Libro();
     lc.id = 1;
     lc.titulo = l1.titulo;
     lc.autor = l1.autor;
     lc.fecha = l1.fecha;
-    return lc;
+    return lc; */
+    this.restService.addLibro(l1);
   }
+
 
   @Get('/:id') //Obtiene libro por identificador
   getById(@Param() params) : Libro {
