@@ -5,7 +5,10 @@ import { LibroSchema } from './libro/libro.schema';
 import { RestService } from './rest/rest.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'Libro', schema: LibroSchema }])],
+  imports: [MongooseModule.forFeature([{
+    name: 'Libro',
+    schema: LibroSchema,
+    collection: 'libro' }])],
   controllers: [LibroController],
   providers: [RestService]
 })

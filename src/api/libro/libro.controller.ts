@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param,Patch, Post, Put } from '@nestjs/common';
 import { RestService } from '../rest/rest.service'
 import { Libro } from './libro';
 
@@ -6,15 +6,27 @@ import { Libro } from './libro';
 export class LibroController {
 
   private l : Libro[] = [];
+
   constructor(private readonly restService: RestService){
     this.restService.libro=[];
     //this.datos=this.restService.getDatos();
   }
 
   @Get() //Listado de libros
-  findAll() : Libro[] {
+  getAll() : Promise<Libro[]> {
     //buscar los datos en la BD
-    return this.restService.getLibros();
+    return this.restService.findAll();
+  }
+
+  @Post()
+  async create(@Body() l: Libro): Promise<Libro> {
+    const libroCon = await this.restService.create(l);
+    return libroCon;
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string): Promise<Libro> {
+    return this.restService.findById(id);
   }
 
   @Post() //Añade un libro y lo devuelve
@@ -29,7 +41,7 @@ export class LibroController {
     this.restService.addLibro(l1);
   }
 
-
+  /*
   @Get('/:id') //Obtiene libro por identificador
   getById(@Param() params) : Libro {
     //Capturar el id y consultar a la BD
@@ -42,7 +54,22 @@ export class LibroController {
 
 
   }
+  */
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() lib: Libro): Promise<Libro> {
+      return this.restService.updateById(id, lib);
+  }
 
+  @Patch(':id')
+  async parchea(@Param('id') id: string, @Body() lib: Libro): Promise<Libro> {
+      return this.restService.patchById(id, lib);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string): Promise<Libro> {
+    return this.restService.delete(id);
+  }
+  /*
   @Put('/:id')
   modifyById(@Param() params, @Body() lib : Libro) : Libro {
     //Captular el id, buscarlo en la BD y guardar los cambios
@@ -54,6 +81,7 @@ export class LibroController {
     return lc;
   }
 
+
   @Delete('/:id')
   deleteById(@Param() params) : Libro {
     //
@@ -64,5 +92,6 @@ export class LibroController {
     lc.fecha = 'libro BORRADO';
     return lc;
   }
+    */
 
 }
